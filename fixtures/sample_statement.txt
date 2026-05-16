@@ -1,0 +1,45 @@
+# Synthetic statement fixture for end-to-end pipeline testing
+#
+# This is NOT a real bank statement and contains NO real account data.
+# Use it to verify the pipeline runs without needing a real customer PDF.
+#
+# To smoke-test the pipeline against this fixture, you can:
+#   1. Manually create a fake PDF from this content (any tool that prints text to PDF)
+#   2. Place at fixtures/sample_statement.pdf
+#   3. Run:
+#        python3 -c "
+#        from agents.intake import handle_pdf_upload
+#        import sqlite3, json
+#        # Insert a fake conversion first
+#        con = sqlite3.connect('state/concierge.db')
+#        con.execute('INSERT INTO conversions (stripe_session_id, product_slug, amount_cents, email) VALUES (?, ?, ?, ?)',
+#                    ('cs_smoke_test_001', 'single_39', 3900, 'test@example.com'))
+#        con.commit(); con.close()
+#        # Upload fixture
+#        from pathlib import Path
+#        pdf_bytes = Path('fixtures/sample_statement.pdf').read_bytes()
+#        print(json.dumps(handle_pdf_upload('cs_smoke_test_001', 'sample.pdf', pdf_bytes, 'chase'), indent=2))
+#        "
+#   4. Then: python3 agents/processor.py --pdf-id <id-from-step-3>
+#   5. Verify the reconciliation report shows delta == 0
+#
+# Expected reconciliation: opening=100000, closing=399500
+# debits = 200500, credits = 500000, expected_closing = 100000 + 500000 - 200500 = 399500
+# delta = 399500 - 399500 = 0 → score 1.0 (PERFECT)
+
+PRINCIPAL BANK
+123 Anywhere St, Anytown US 00000
+Statement Period: 2026-05-01 to 2026-05-31
+Account: ****1234
+
+OPENING BALANCE: $1,000.00
+
+Date         Description                          Debit         Credit       Balance
+2026-05-02   PAYROLL ACME CORP                                  $5,000.00   $6,000.00
+2026-05-03   ELECTRIC COMPANY                     $200.00                    $5,800.00
+2026-05-04   COFFEE SHOP DOWNTOWN                 $5.00                      $5,795.00
+2026-05-05   RENT PAYMENT 123 LANDLORD            $1,800.00                  $3,995.00
+                                            ───────────  ───────────
+TOTALS                                       $2,005.00      $5,000.00
+
+CLOSING BALANCE: $3,995.00

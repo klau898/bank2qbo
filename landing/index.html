@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Convert any US bank statement PDF into QuickBooks-ready CSV or IIF in 24 hours. Real human review, 99%+ reconciliation guaranteed. $39 per statement.">
+<title>Bank2QBO — PDF bank statement to QuickBooks in 24 hours</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%B0%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --navy: #1e3a5f;
+    --navy-dark: #0f1f33;
+    --cream: #faf7f2;
+    --gold: #c9a961;
+    --text: #1a1a1a;
+    --muted: #6b6b6b;
+    --border: #e5dfd6;
+  }
+  *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif; line-height: 1.6; color: var(--text); background: var(--cream); }
+  .container { max-width: 880px; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* Header */
+  header { background: var(--navy); color: var(--cream); padding: 1rem 0; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  header .container { display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; }
+  header .cta-top { background: var(--gold); color: var(--navy-dark); padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+  header .cta-top:hover { background: #d4b574; }
+
+  /* Hero */
+  .hero { padding: 4rem 0 3rem; text-align: center; }
+  .hero h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 1rem; max-width: 700px; margin-left: auto; margin-right: auto; }
+  .hero .sub { color: var(--muted); font-size: 1.1rem; max-width: 580px; margin: 0 auto 2rem; }
+  .cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary, .btn-secondary { padding: 0.9rem 1.6rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.15s; display: inline-block; }
+  .btn-primary { background: var(--navy); color: var(--cream); }
+  .btn-primary:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(30,58,95,0.3); }
+  .btn-secondary { background: transparent; color: var(--navy); border: 2px solid var(--navy); }
+  .btn-secondary:hover { background: var(--navy); color: var(--cream); }
+
+  /* Sections */
+  section { padding: 3rem 0; border-top: 1px solid var(--border); }
+  section h3 { font-size: 1.6rem; font-weight: 700; margin-bottom: 1rem; letter-spacing: -0.01em; }
+  section p { color: var(--text); margin-bottom: 1rem; }
+
+  /* How it works */
+  .steps { list-style: none; counter-reset: step; }
+  .steps li { counter-increment: step; padding-left: 3rem; position: relative; margin-bottom: 1.5rem; }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; background: var(--navy); color: var(--cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+  .steps li strong { font-weight: 700; }
+
+  /* Pricing */
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .price-card { background: white; border: 2px solid var(--border); border-radius: 8px; padding: 1.5rem; }
+  .price-card.featured { border-color: var(--gold); position: relative; }
+  .price-card.featured::after { content: "BEST VALUE"; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--gold); color: var(--navy-dark); padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; }
+  .price-card h4 { font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .price-card .price { font-size: 2rem; font-weight: 700; color: var(--navy-dark); margin-bottom: 0.5rem; }
+  .price-card .price span { font-size: 1rem; color: var(--muted); font-weight: 400; }
+  .price-card ul { list-style: none; margin: 1rem 0; }
+  .price-card li { padding: 0.25rem 0; font-size: 0.9rem; }
+  .price-card li::before { content: "✓ "; color: var(--gold); font-weight: 700; }
+  .price-card a { display: block; text-align: center; background: var(--navy); color: var(--cream); padding: 0.75rem; border-radius: 6px; text-decoration: none; font-weight: 600; margin-top: 1rem; }
+  .price-card.featured a { background: var(--gold); color: var(--navy-dark); }
+  .price-card a:hover { opacity: 0.9; }
+
+  /* Trust signals */
+  .trust { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+  .trust-item h5 { font-weight: 700; margin-bottom: 0.5rem; color: var(--navy-dark); }
+  .trust-item p { font-size: 0.95rem; color: var(--muted); }
+
+  /* FAQ */
+  details { margin: 0.75rem 0; padding: 1rem; background: white; border-radius: 6px; border: 1px solid var(--border); }
+  details summary { font-weight: 600; cursor: pointer; outline: none; }
+  details[open] { border-color: var(--navy); }
+  details p { margin-top: 0.75rem; color: var(--text); font-size: 0.95rem; }
+
+  /* Waitlist */
+  .waitlist { background: var(--navy); color: var(--cream); padding: 2.5rem; border-radius: 8px; margin: 3rem 0; text-align: center; }
+  .waitlist h3 { color: var(--cream); }
+  .waitlist form { display: flex; gap: 0.5rem; max-width: 480px; margin: 1.5rem auto 0; flex-wrap: wrap; }
+  .waitlist input { flex: 1; min-width: 200px; padding: 0.85rem; border-radius: 6px; border: none; font-size: 1rem; }
+  .waitlist button { background: var(--gold); color: var(--navy-dark); border: none; padding: 0.85rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+
+  /* Footer */
+  footer { background: var(--navy-dark); color: var(--cream); padding: 2rem 0; text-align: center; font-size: 0.9rem; opacity: 0.9; }
+  footer a { color: var(--gold); text-decoration: none; }
+</style>
+
+<!-- PostHog (free tier) -->
+<script>
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init bs ws ge fs capture De calculateEventProperties Ai $s register register_once register_for_session unregister unregister_for_session Rs getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty Ds Fs createPersonProfile Is opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing Ss debug ks getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  // PostHog project key — replace with real key from app.posthog.com after free signup
+  // PostHog disabled until real `phc_XXX` key is set. Re-enable by replacing the placeholder below.
+  // posthog.init('phc_REPLACE_ME_WITH_REAL_KEY', { api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only' });
+</script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>Bank2QBO</h1>
+    <a href="https://buy.stripe.com/28EcN5gSh9Bs3oX2xhbbG1O" class="cta-top">Convert one — $39</a>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="container">
+    <h2>Convert any US bank statement PDF into QuickBooks-ready CSV or IIF in 24 hours.</h2>
+    <p class="sub">Real human review on every file. 99%+ reconciliation accuracy guaranteed. $39 per statement, $99 for five.</p>
+    <div class="cta-row">
+      <a href="https://buy.stripe.com/28EcN5gSh9Bs3oX2xhbbG1O" class="btn-primary">Send your first statement — $39</a>
+      <a href="#waitlist" class="btn-secondary">Try 5 pages free</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h3>The pain</h3>
+    <p>Your client just sent you a 47-page Chase PDF — for a month. You can either retype every transaction into QuickBooks, pay a junior $150 to do it, or fight with a generic OCR tool that puts the date in the description field and leaves out half the credit-card fees.</p>
+    <p><strong>There's a fourth option.</strong></p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h3>How it works</h3>
+    <ol class="steps">
+      <li><strong>You upload one PDF.</strong> Drag-and-drop. Any US bank, any size.</li>
+      <li><strong>A human reviewer (Claudio at Munda LLC) processes it with Claude Vision + a reconciliation verifier.</strong> Every row gets checked: dates, descriptions, debits/credits, signs, merged lines, scanned check images, bank fees.</li>
+      <li><strong>In 24 hours you receive two files:</strong> a clean CSV (for any system) and a QBO-ready IIF (drag straight into QuickBooks Desktop) or a categorized 3-column CSV (for QBO Online import). Plus a reconciliation report: row count, sum of debits/credits, opening + closing balance match.</li>
+      <li><strong>If reconciliation isn't above 99%, we re-run it.</strong> Free. Or full refund. Your call.</li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h3>Pricing</h3>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h4>Trial</h4>
+        <div class="price">Free</div>
+        <ul>
+          <li>5 pages, watermarked output</li>
+          <li>No card required</li>
+          <li>Email delivery</li>
+        </ul>
+        <a href="#waitlist">Request trial</a>
+      </div>
+      <div class="price-card">
+        <h4>Single</h4>
+        <div class="price">$39 <span>one-time</span></div>
+        <ul>
+          <li>One PDF, up to 100 pages</li>
+          <li>CSV + IIF delivery</li>
+          <li>24h turnaround</li>
+          <li>99% reconciliation or refund</li>
+        </ul>
+        <a href="https://buy.stripe.com/28EcN5gSh9Bs3oX2xhbbG1O">Buy now</a>
+      </div>
+      <div class="price-card featured">
+        <h4>5-Pack</h4>
+        <div class="price">$99 <span>30 days</span></div>
+        <ul>
+          <li>Five statements ($19.80 each)</li>
+          <li>Same 99% accuracy guarantee</li>
+          <li>Best for cleanup projects</li>
+        </ul>
+        <a href="https://buy.stripe.com/3cI8wPfOd3d41gP6NxbbG1P">Buy 5-Pack</a>
+      </div>
+    </div>
+    <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--muted);">Firm ($99/mo, 500 pages) and Pro ($249/mo, 1,500 pages) tiers ship Week 3 — <a href="#waitlist" style="color: var(--navy); font-weight: 600;">join the waitlist for 30% lifetime discount</a>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h3>What's different</h3>
+    <div class="trust">
+      <div class="trust-item">
+        <h5>24-hour human review</h5>
+        <p>Not auto-magic. Real reconciliation on every row.</p>
+      </div>
+      <div class="trust-item">
+        <h5>Bilingual EN/ES</h5>
+        <p>Native Spanish receipts + walkthrough for accountants serving Hispanic clients.</p>
+      </div>
+      <div class="trust-item">
+        <h5>Per-bank tuning</h5>
+        <p>Chase, BoA, Wells Fargo, Citi, Capital One, Discover, US Bank, Truist, PNC — hand-tuned parsing rules.</p>
+      </div>
+      <div class="trust-item">
+        <h5>Deleted on request</h5>
+        <p>Reply to any delivery email with "delete" and I purge your statement + outputs within 1 business day. GLBA-aligned handling, TLS in transit, encrypted at rest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="waitlist">
+  <div class="container">
+    <div class="waitlist">
+      <h3>Try 5 pages free, or join the Firm/Pro waitlist</h3>
+      <p>We're in concierge mode — every conversion is human-reviewed. Email your 5-page sample directly and we'll return the CSV + IIF within 24h, plus add you to the early-access list for monthly tiers (30% lifetime discount).</p>
+      <form id="waitlist-form" onsubmit="event.preventDefault(); const email=document.getElementById('wl-email').value; const bank=document.getElementById('wl-bank').value; const subj=encodeURIComponent('Free 5-page trial — ' + (bank || 'unspecified bank')); const body=encodeURIComponent('Hi —\n\nI want to try the free 5-page Bank2QBO trial.\n\nMy email: ' + email + '\nMy bank: ' + (bank || 'tbd') + '\n\nI will attach the 5-page sample PDF to this email reply.\n\nThanks');  window.location.href = 'mailto:support@bank2qbo.com?subject=' + subj + '&body=' + body; return false;">
+        <input type="email" id="wl-email" name="email" required placeholder="your@email.com">
+        <input type="text" id="wl-bank" name="bank" placeholder="Which bank (Chase, Wells, etc.)?">
+        <button type="submit">Request free trial</button>
+      </form>
+      <p style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--muted);">Or email directly: <a href="mailto:support@bank2qbo.com?subject=Free 5-page Bank2QBO trial">support@bank2qbo.com</a></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h3>FAQ</h3>
+    <details>
+      <summary>How is this different from DocuClipper / Veryfi / Dext?</summary>
+      <p>Those are full-auto OCR — fast, but you have to audit every row anyway. We add human verification + a per-bank library + a 99% reconciliation guarantee, so you can hand the output straight to a client without re-checking. For one-off cleanup jobs the $39 flat fee usually beats the $34/mo Dext subscription.</p>
+    </details>
+    <details>
+      <summary>Can I really upload a 200-page PDF?</summary>
+      <p>Yes. Single tier covers up to 100 pages; for larger, drop us a line at support@bank2qbo.com and we'll quote per-page above 100.</p>
+    </details>
+    <details>
+      <summary>My client has a weird bank — will it work?</summary>
+      <p>If it's a US bank (state, regional, credit union, fintech like Mercury / Bluevine / Chime) and the PDF has selectable text, yes — we add new bank formats weekly. If we can't get above 99% reconciliation, full refund.</p>
+    </details>
+    <details>
+      <summary>What about scanned PDFs (photographed or image-only)?</summary>
+      <p>Scanned bank statements (no selectable text — pure image scans) are handled but with extra manual review and a slower turnaround (24-48h instead of 4-24h). Reconciliation guarantee still applies. If your statement is image-only, please flag it in your email so I can prioritize manual extraction.</p>
+    </details>
+    <details>
+      <summary>HIPAA / SOC 2 / signed BAA?</summary>
+      <p>We're a single-operator service in concierge mode. We follow GLBA reasonable-safeguards: TLS in transit, encrypted at rest, deleted on request (reply "delete" to your delivery email and I purge your statement + outputs within one business day). If your firm requires a signed BAA/MNDA we can sign one — email support@bank2qbo.com.</p>
+    </details>
+    <details>
+      <summary>Refund policy?</summary>
+      <p>99% reconciliation accuracy guaranteed. If your file isn't that accurate, full refund, no questions, within 24 hours of you flagging it.</p>
+    </details>
+    <details>
+      <summary>When does the Firm tier ship?</summary>
+      <p>Week 3 of May 2026. Join the waitlist above for a 30% lifetime discount.</p>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p><strong>Bank2QBO</strong> by <strong>Munda LLC</strong> · Miami FL · EIN 41-2402793</p>
+    <p style="margin-top: 0.5rem;"><a href="mailto:support@bank2qbo.com">support@bank2qbo.com</a> · 786-822-7682</p>
+  </div>
+</footer>
+
+</body>
+</html>

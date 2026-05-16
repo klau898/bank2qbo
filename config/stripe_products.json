@@ -1,0 +1,14 @@
+{
+  "single": {
+    "product_id": "prod_UWFCMIVVB5CFls",
+    "price_id": "price_1TXCiJHAKvGM0XC8tYDMzLle",
+    "payment_link_id": "plink_1TXCiKHAKvGM0XC8ERrY3TNW",
+    "payment_link_url": "https://buy.stripe.com/dRm7sL9pP5lc1gP7RBbbG1M"
+  },
+  "pack": {
+    "product_id": "prod_UWFC7V4eaw4FqH",
+    "price_id": "price_1TXCiLHAKvGM0XC8KLjVAOij",
+    "payment_link_id": "plink_1TXCiMHAKvGM0XC8O4hmrhtY",
+    "payment_link_url": "https://buy.stripe.com/3cI4gz45v3d44t13BlbbG1N"
+  }
+}
